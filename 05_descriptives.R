@@ -126,3 +126,121 @@ x <- rnorm(1000)
 
 # Getting an overall summary of a variable ----
 
+## “Summarising” a variable ----
+
+summary(object = afl_margins)
+
+# blowout: game in which the winning margin exceeds 50 points
+blowouts <- afl_margins > 50
+blowouts
+
+summary(object = blowouts)
+
+# summarise a factor
+summary(object = afl_finalists)
+
+# summarise a character vector
+summary(object = as.character(afl_finalists))
+
+## “Summarising” a data frame ----
+
+load("data/clinicaltrial.Rdata")
+
+summary(clin_trial)
+
+## “Describing” a data frame ----
+
+psych::describe(x = clin_trial)
+
+## Descriptive statistics separately for each group ----
+
+psych::describeBy(x = clin_trial, group = clin_trial$therapy)
+
+by(data = clin_trial, INDICES = clin_trial$therapy, FUN = psych::describe)
+by(data = clin_trial, INDICES = clin_trial$therapy, FUN = summary)
+
+aggregate(
+  mood_gain ~ drug + therapy, # mood_gain by drug/therapy combination
+  data = clin_trial,          # data is in the clin_trial data frame
+  FUN = mean                  # print out group means
+)
+
+aggregate(mood_gain ~ drug + therapy, clin_trial, sd)
+
+# Standard scores ----
+
+(X - mean(X)) / sd(X)
+scale(X)
+
+# Correlations ----
+
+## Data ----
+
+load("data/parenthood.Rdata")
+head(parenthood)
+
+psych::describe(parenthood)
+
+hist(parenthood$danielle_sleep)
+hist(parenthood$baby_sleep)
+hist(parenthood$danielle_grump)
+
+## The strength and direction of a relationship ----
+
+plot(parenthood$danielle_sleep, parenthood$danielle_grump)
+plot(parenthood$baby_sleep, parenthood$danielle_grump)
+plot(parenthood$baby_sleep, parenthood$danielle_sleep)
+
+## The correlation coefficient ----
+
+# Pearson's correlation coefficient:
+# r = -1 ..... perfect negative relationship
+# r = +1 ..... perfect positive relationship
+# r =  0 ..... no relationship
+
+# covariance:
+# cov_xy = (1 / N - 1) * sum((x - mean(x)) * (y - mean(y)))
+
+# correlation coefficient:
+# r = cov_xy / (sd(x) * sd(y))
+
+## Calculating correlations in R ----
+
+var1 <- parenthood$danielle_sleep
+var2 <- parenthood$danielle_grump
+
+(sum((var1 - mean(var1)) * (var2 - mean(var2)))) / (sd(var1) * sd(var2)) / 99
+
+cor(x = parenthood$danielle_sleep, y = parenthood$danielle_grump)
+
+# correlate all pairs of variables in "parenthood":
+cor(x = parenthood)
+
+## Interpreting a correlation ----
+
+# Correlation      | Strength    | Direction
+# -1.0 to -0.9     | Very Strong | Negative
+# -0.9 to -0.7     | Strong      | Negative
+# -0.7 to -0.4     | Moderate    | Negative
+# -0.4 to -0.2     | Weak        | Negative
+# -0.2 to 0        | Negligible  | Negative
+# 0 to 0.2         | Negligible  | Positive
+# 0.2 to 0.4       | Weak        | Positive
+# 0.4 to 0.7       | Moderate    | Positive
+# 0.7 to 0.9       | Strong      | Positive
+# 0.9 to 1.0       | Very Strong | Positive
+
+# Anscombe's quartet
+load("data/anscombesquartet.Rdata")
+
+cor(x1, y1)
+cor(x2, y2)
+cor(x3, y3)
+cor(x4, y4)
+
+plot(x1, y1)
+plot(x2, y2)
+plot(x3, y3)
+plot(x4, y4)
+
+## Spearman’s rank correlations ----
